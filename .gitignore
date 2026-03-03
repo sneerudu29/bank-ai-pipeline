@@ -1,0 +1,23 @@
+# Terraform sensitive files
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pkl
+venv/
+
+# Azure credentials
+*.json
+azure_credentials*
+
+# Environment files
+.env
+*.env
