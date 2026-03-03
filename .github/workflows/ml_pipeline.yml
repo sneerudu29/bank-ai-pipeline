@@ -88,7 +88,7 @@ jobs:
       # ================================================
       - name: 🎉 Pipeline Complete
         run: |
-          echo "================================"az ad sp create-for-rbac --name "github-actions-bank" --role contributor --scopes /subscriptions/1ec22969-64c5-42d7-a3b6-c9b794d28498/resourceGroups/bank-ai-dev-rg --sdk-auth
+          echo "================================"az ad sp create-for-rbac --name "github-actions-bank-pipeline" --role contributor --scopes /subscriptions/1ec22969-64c5-42d7-a3b6-c9b794d28498/resourceGroups/bank-ai-dev-rg --sdk-auth
           echo "Bank ML Pipeline Successful!"
           echo "Fraud detection model updated"
           echo "================================"
