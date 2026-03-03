@@ -4,9 +4,13 @@
 
 from azure.storage.blob import BlobServiceClient
 from azure.identity import DefaultAzureCredential
+import os
 
 # Your storage account name (from Terraform outputs)
-STORAGE_ACCOUNT_NAME = "bankaidevst"  
+STORAGE_ACCOUNT_NAME = os.environ.get(
+    "STORAGE_ACCOUNT_NAME",
+    "bankaidevst"  # fallback for local use
+)
 CONTAINER_NAME = "fraud-detection-data"
 LOCAL_FILE = "fraud_data.csv"
 

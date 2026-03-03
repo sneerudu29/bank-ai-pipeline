@@ -1,0 +1,94 @@
+# ml_pipeline.yml
+# Bank Fraud Detection — Automated ML Pipeline
+# Runs automatically every time code is pushed
+
+name: Bank ML Pipeline
+
+# TRIGGER — When does this run?
+on:
+  push:
+    branches: [main]  # Run on every push to main
+  workflow_dispatch:   # Allow manual trigger too
+
+# JOBS — What does it do?
+jobs:
+  train-fraud-model:
+    name: Train Fraud Detection Model
+    runs-on: ubuntu-latest  # Use Linux machine
+
+    steps:
+      # ================================================
+      # STEP 1 — Get the code
+      # ================================================
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v3
+
+      # ================================================
+      # STEP 2 — Set up Python
+      # ================================================
+      - name: 🐍 Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # ================================================
+      # STEP 3 — Install dependencies
+      # ================================================
+      - name: 📦 Install Dependencies
+        run: |
+          pip install azure-storage-blob \
+                      azure-identity \
+                      azure-ai-ml \
+                      scikit-learn \
+                      pandas \
+                      joblib
+
+      # ================================================
+      # STEP 4 — Login to Azure
+      # Uses secrets stored in GitHub (not hardcoded!)
+      # ================================================
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # ================================================
+      # STEP 5 — Upload training data
+      # ================================================
+      - name: 📤 Upload Training Data
+        run: python upload_data.py
+        env:
+          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+
+      # ================================================
+      # STEP 6 — Train the model
+      # ================================================
+      - name: 🤖 Train Fraud Detection Model
+        run: python train_model.py
+        env:
+          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+          RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+          WORKSPACE_NAME: ${{ secrets.WORKSPACE_NAME }}
+
+      # ================================================
+      # STEP 7 — Verify model was registered
+      # ================================================
+      - name: ✅ Verify Model Registration
+        run: |
+          echo "Checking model registry..."
+          az ml model list \
+            --workspace-name ${{ secrets.WORKSPACE_NAME }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --query "[0].{Name:name, Version:version}" \
+            -o table
+
+      # ================================================
+      # STEP 8 — Notify success
+      # ================================================
+      - name: 🎉 Pipeline Complete
+        run: |
+          echo "================================"
+          echo "Bank ML Pipeline Successful!"
+          echo "Fraud detection model updated"
+          echo "================================"

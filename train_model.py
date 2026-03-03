@@ -13,6 +13,7 @@ from azure.ai.ml.entities import Model
 from azure.ai.ml.constants import AssetTypes
 from azure.identity import DefaultAzureCredential
 import io
+import os
 
 print("🏦 Bank Fraud Detection Model Training")
 print("=" * 45)
@@ -22,8 +23,22 @@ print("=" * 45)
 # Not from local file — from YOUR cloud storage!
 # ================================================
 print("\n📦 Step 1: Loading data from Azure Storage...")
-
-STORAGE_ACCOUNT_NAME = "bankaidevst"
+STORAGE_ACCOUNT_NAME = os.environ.get(
+    "STORAGE_ACCOUNT_NAME",
+    "bankaidevst"
+)
+SUBSCRIPTION_ID = os.environ.get(
+    "SUBSCRIPTION_ID",
+    "1ec22969-64c5-42d7-a3b6-c9b794d28498"
+)
+RESOURCE_GROUP = os.environ.get(
+    "RESOURCE_GROUP",
+    "bank-ai-dev-rg"
+)
+WORKSPACE_NAME = os.environ.get(
+    "WORKSPACE_NAME",
+    "bank-ai-ml-workspace"
+)
 credential = DefaultAzureCredential()
 account_url = f"https://{STORAGE_ACCOUNT_NAME}.blob.core.windows.net"
 client = BlobServiceClient(account_url=account_url, credential=credential)
