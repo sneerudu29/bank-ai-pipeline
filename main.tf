@@ -57,7 +57,7 @@ resource "azurerm_storage_account" "main" {
   account_replication_type = "LRS"
 
   # Security settings (important for bank!)
-  enable_https_traffic_only = true
+  https_traffic_only_enabled = true
   min_tls_version           = "TLS1_2"
 
   tags = azurerm_resource_group.main.tags
@@ -189,4 +189,28 @@ resource "azurerm_key_vault_access_policy" "ml_workspace" {
     "Recover",
     "Purge"
   ]
+}
+
+# ================================================
+# GIVE GITHUB ACTIONS SERVICE PRINCIPAL
+# Access to Storage + ML Workspace
+# ================================================
+
+# First get service principal object ID
+data "azuread_service_principal" "github_actions" {
+  display_name = "github-actions-bank-pipeline"
+}
+
+# Storage access for GitHub Actions
+resource "azurerm_role_assignment" "github_storage" {
+  scope                = azurerm_storage_account.main.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azuread_service_principal.github_actions.object_id
+}
+
+# ML Workspace access for GitHub Actions
+resource "azurerm_role_assignment" "github_ml" {
+  scope                = azurerm_machine_learning_workspace.main.id
+  role_definition_name = "AzureML Data Scientist"
+  principal_id         = data.azuread_service_principal.github_actions.object_id
 }

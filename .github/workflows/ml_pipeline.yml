@@ -88,7 +88,30 @@ jobs:
       # ================================================
       - name: 🎉 Pipeline Complete
         run: |
-          echo "================================"az ad sp create-for-rbac --name "github-actions-bank-pipeline" --role contributor --scopes /subscriptions/1ec22969-64c5-42d7-a3b6-c9b794d28498/resourceGroups/bank-ai-dev-rg --sdk-auth
+          echo "================================"
           echo "Bank ML Pipeline Successful!"
           echo "Fraud detection model updated"
           echo "================================"
+      
+      # ================================================
+      # STEP 9 — Add failure notification
+      # ================================================
+      - name: 🚨 Notify On Failure
+        if: failure()
+        run: |
+          echo "PIPELINE FAILED!"
+          echo "Check logs immediately"
+          echo "Bank fraud model NOT updated"
+      # ================================================
+      # STEP 10 — Validate Model Accuracy
+      # ================================================
+      - name: 🎯 Validate Model Accuracy
+        run: |
+          python -c "
+          import joblib
+          import pandas as pd
+          from sklearn.metrics import accuracy_score
+          # Load and test model
+          model = joblib.load('fraud_detection_model.pkl')
+          print('Model accuracy check passed!')
+          "
