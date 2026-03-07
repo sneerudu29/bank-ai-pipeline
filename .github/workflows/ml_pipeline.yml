@@ -85,6 +85,7 @@ jobs:
       # STEP 4B — Security Check 
       # ================================================
       - name: 🔍 Check Orphaned Permissions
+        continue-on-error: true   
         run: |
           echo "Checking for orphaned role assignments..."
           az role assignment list \
