@@ -42,6 +42,36 @@ jobs:
                       scikit-learn \
                       pandas \
                       joblib
+      
+      # ================================================
+      # SECURITY SCANNING STEPS
+      # ================================================
+
+      # Scan for accidentally exposed secrets
+      - name: 🔍 Scan For Secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          extra_args: --only-verified
+
+      # Scan Python dependencies for vulnerabilities
+      - name: 🛡️ Scan Dependencies
+        run: |
+          pip install safety
+          safety check --json || true
+          echo "Dependency scan complete"
+
+      # Check Terraform security
+      - name: 🏗️ Scan Terraform Security
+        run: |
+          pip install checkov
+          checkov -d . \
+            --framework terraform \
+            --quiet \
+            --compact \
+            || true
+          echo "Terraform security scan complete"
 
       # ================================================
       # STEP 4 — Login to Azure
@@ -51,6 +81,17 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # ================================================
+      # STEP 4B — Security Check 
+      # ================================================
+      - name: 🔍 Check Orphaned Permissions
+        run: |
+          echo "Checking for orphaned role assignments..."
+          az role assignment list \
+            --resource-group "${{ secrets.RESOURCE_GROUP }}" \
+            --query "[?principalName==''].{Id:principalId, Role:roleDefinitionName}" \
+            --output table
+          echo "Security check complete!"
 
       # ================================================
       # STEP 5 — Upload training data
