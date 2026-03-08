@@ -1,0 +1,30 @@
+Bank Anti-Money Laundering (AML) Policy
+
+1. CASH TRANSACTION REPORTING
+All cash transactions exceeding $10,000 CAD must be 
+reported to FINTRAC within 15 business days.
+Multiple transactions by same customer totaling 
+$10,000 in 24 hours must also be reported.
+
+2. SUSPICIOUS TRANSACTION REPORTING
+Any transaction suspected of being related to money 
+laundering must be reported immediately.
+Employees must not tip off customers about reports.
+Reports must be filed within 30 days of suspicion.
+
+3. CUSTOMER DUE DILIGENCE
+All new customers must provide government issued ID.
+High risk customers require enhanced due diligence.
+PEP (Politically Exposed Persons) require additional 
+screening and senior management approval.
+
+4. RECORD KEEPING
+All transaction records must be kept for 7 years.
+Customer identification records kept for 7 years 
+after account closure.
+Records must be available to FINTRAC within 30 days.
+
+5. EMPLOYEE TRAINING
+All employees must complete AML training annually.
+New employees must complete within 30 days of joining.
+Training records must be maintained for 5 years.

@@ -214,3 +214,126 @@ resource "azurerm_role_assignment" "github_ml" {
   role_definition_name = "AzureML Data Scientist"
   principal_id         = data.azuread_service_principal.github_actions.object_id
 }
+
+# ================================================
+# NETWORK SECURITY GROUP
+# Controls all traffic to ML resources
+# Bank requires this for all compute!
+# ================================================
+resource "azurerm_network_security_group" "ml_nsg" {
+  name                = "${var.project_name}-${var.environment}-nsg"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  # RULE 1 — Allow HTTPS only
+  security_rule {
+    name                       = "Allow-HTTPS"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "*"
+    description                = "Allow HTTPS from virtual network only"
+  }
+
+  # RULE 2 — Allow Azure ML service
+  security_rule {
+    name                       = "Allow-AzureML"
+    priority                   = 200
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "44224"
+    source_address_prefix      = "AzureMachineLearning"
+    destination_address_prefix = "*"
+    description                = "Allow Azure ML service traffic"
+  }
+
+  # RULE 3 — DENY ALL (Most important!)
+  security_rule {
+    name                       = "Deny-All-Inbound"
+    priority                   = 4096
+    direction                  = "Inbound"
+    access                     = "Deny"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+    description                = "Deny all other inbound traffic"
+  }
+
+  tags = azurerm_resource_group.main.tags
+}
+
+# ================================================
+# AZURE POLICY — Enforce Bank Standards
+# ================================================
+
+# Policy 1 — Require HTTPS on all storage
+resource "azurerm_resource_group_policy_assignment" "require_https" {
+  name                 = "require-https-storage"
+  resource_group_id    = azurerm_resource_group.main.id
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9"
+
+  description  = "Ensures all storage accounts use HTTPS"
+  display_name = "Require HTTPS on Storage Accounts"
+}
+
+# Policy 2 — Require tags on all resources
+resource "azurerm_resource_group_policy_assignment" "require_tags" {
+  description          = "Ensures all resources have required tags"
+  display_name         = "Require Tags on Resources"
+  enforce              = true
+  name                 = "require-resource-tags"
+  policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/96670d01-0a4d-4649-9c89-2d3abc0a5025"
+  resource_group_id    = azurerm_resource_group.main.id
+
+  parameters = jsonencode({
+    tagName = {
+      value = "environment"
+    }
+  })
+}
+
+# ================================================
+# AZURE DATA FACTORY
+# Automates daily fraud data pipeline
+# Bank uses this for all data movement
+# ================================================
+resource "azurerm_data_factory" "main" {
+  name                = "${var.project_name}-${var.environment}-adf"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+
+  # Managed identity for secure access
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = azurerm_resource_group.main.tags
+}
+
+# Give Data Factory access to Storage
+resource "azurerm_role_assignment" "adf_storage" {
+  scope                = azurerm_storage_account.main.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_data_factory.main.identity[0].principal_id
+}
+
+# Give Data Factory access to ML Workspace
+resource "azurerm_role_assignment" "adf_ml" {
+  scope                = azurerm_machine_learning_workspace.main.id
+  role_definition_name = "AzureML Data Scientist"
+  principal_id         = azurerm_data_factory.main.identity[0].principal_id
+}
+
+# Output Data Factory name
+output "data_factory_name" {
+  value = azurerm_data_factory.main.name
+  description = "Data Factory name for pipeline configuration"
+}

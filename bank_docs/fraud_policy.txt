@@ -1,0 +1,27 @@
+Bank Fraud Detection and Prevention Policy
+
+1. REAL-TIME MONITORING
+All transactions are monitored 24/7 using AI systems.
+Suspicious patterns trigger automatic alerts.
+High-risk transactions may be temporarily blocked.
+
+2. FRAUD THRESHOLDS
+Transactions over $5,000 in unusual locations flagged.
+3+ declined transactions in 1 hour triggers review.
+International transactions require additional verification.
+
+3. CUSTOMER NOTIFICATION
+Customers notified within 24 hours of suspected fraud.
+Temporary blocks communicated via SMS and email.
+Customers can dispute transactions within 60 days.
+
+4. INVESTIGATION PROCESS
+All fraud reports investigated within 5 business days.
+Customer accounts credited within 10 business days.
+Police reports required for losses over $1,000.
+
+5. AI MODEL GOVERNANCE
+Fraud detection models reviewed quarterly.
+Model accuracy must exceed 95% before deployment.
+False positive rate must stay below 2%.
+All model changes require security team approval.

@@ -9,6 +9,8 @@ on:
   push:
     branches: [main]  # Run on every push to main
   workflow_dispatch:   # Allow manual trigger too
+  schedule:
+    - cron: '0 0 * * *' # Midnight UTC daily
 
 # JOBS — What does it do?
 jobs:
@@ -93,6 +95,15 @@ jobs:
             --query "[?principalName==''].{Id:principalId, Role:roleDefinitionName}" \
             --output table
           echo "Security check complete!"
+      
+      # ================================================
+      # STEP — Run Data Pipeline First
+      # Collects fresh fraud data before training
+      # ================================================
+      - name: 🔄 Run Data Pipeline
+        run: python data_pipeline.py
+        env:
+          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
 
       # ================================================
       # STEP 5 — Upload training data
@@ -101,6 +112,7 @@ jobs:
         run: python upload_data.py
         env:
           STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+      
 
       # ================================================
       # STEP 6 — Train the model
@@ -157,3 +169,5 @@ jobs:
           model = joblib.load('fraud_detection_model.pkl')
           print('Model accuracy check passed!')
           "
+
+     

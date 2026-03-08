@@ -1,0 +1,30 @@
+Bank Data Privacy and Protection Policy
+
+1. DATA CLASSIFICATION
+Public: Marketing materials, published reports
+Internal: Employee communications, procedures
+Confidential: Customer data, financial records
+Restricted: Authentication data, encryption keys
+
+2. CUSTOMER DATA HANDLING
+Customer PII encrypted at rest and in transit.
+Access to customer data on need-to-know basis.
+Customer data never shared without explicit consent.
+Data minimization — collect only what's needed.
+
+3. AI AND MACHINE LEARNING DATA
+Training data must be anonymized before use.
+No real customer PII in development environments.
+Model outputs must not expose customer information.
+AI decisions affecting customers must be explainable.
+
+4. DATA RETENTION
+Active account data retained for account lifetime.
+Closed account data retained for 7 years.
+Transaction data retained for 7 years minimum.
+Backup data encrypted and stored in Canada only.
+
+5. BREACH RESPONSE
+Security breaches reported to OSFI within 72 hours.
+Affected customers notified within 24 hours.
+Full incident report within 30 days of discovery.
