@@ -21,3 +21,13 @@ azure_credentials*
 # Environment files
 .env
 *.env
+
+# Generated data files
+transactions_*.csv
+latest_transactions.csv
+pipeline_report_*.json
+
+# Generated ML files
+bank_vectorstore/
+*.pkl
+
