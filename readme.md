@@ -10,8 +10,88 @@ A complete, production-grade MLOps platform that:
 - 🚀 Retrains and deploys updated models automatically
 - 🔐 Secured to bank-grade compliance standards
 - 📋 Answers compliance questions using RAG AI
+- 🌐 User-friendly web interface — no coding required
 
 **Zero manual intervention required after deployment.**
+
+---
+
+## 🌐 Web Interface — Live Demo
+
+> Non-technical users can interact with the full platform
+> via a Streamlit web interface.
+> No coding required.
+
+### Compliance Assistant
+![Compliance Assistant](screenshots/compliance_assistant.png)
+
+*Ask any policy question in plain English — get instant answers with source citations*
+
+---
+
+### Fraud Checker
+![Fraud Checker](screenshots/fraud_checker.png)
+
+*Adjust transaction details with sliders — get real-time fraud risk assessment*
+
+---
+
+### Pipeline Dashboard
+![Pipeline Dashboard](screenshots/pipeline_dashboard.png)
+
+*View automated pipeline run history, metrics, and 7-day fraud trends*
+
+---
+
+### Run Locally In 2 Minutes
+
+```bash
+pip install streamlit pandas numpy
+streamlit run app.py
+# Opens at http://localhost:8501
+```
+
+---
+
+## 🖥️ Quick Start — No Azure Needed
+
+```bash
+# Install dependencies
+pip install scikit-learn pandas numpy joblib streamlit langchain
+
+# Generate fresh transaction data
+py data_pipeline.py
+
+# Train fraud detection model
+py train_model.py
+
+# Launch web interface
+streamlit run app.py
+```
+
+---
+
+## ☁️ Cloud Deployment (Azure)
+
+Full production deployment on Azure via Terraform.
+Infrastructure redeploys in under 10 minutes.
+
+```bash
+# Enable Azure mode
+$env:USE_AZURE="true"
+$env:STORAGE_ACCOUNT_NAME="your-storage-account"
+
+# Deploy all infrastructure
+terraform init
+terraform apply
+
+# Run full cloud pipeline
+py data_pipeline.py
+py train_model.py
+```
+
+> Built and validated on Azure canadacentral region.
+> Fully automated — runs every night at midnight via GitHub Actions.
 
 ---
 
@@ -106,6 +186,7 @@ Professional Answer
 | Vector DB | FAISS | Semantic document search |
 | Security | Azure RBAC + NSG | Bank-grade security |
 | Data | Azure Data Factory | Automated data pipelines |
+| Web Interface | Streamlit | Non-technical user interface |
 | Language | Python 3.11 | Pipeline + ML code |
 | ML Library | Scikit-learn | Fraud detection model |
 | Monitoring | Azure App Insights | Observability |
@@ -119,48 +200,57 @@ Professional Answer
 bank-ai-project/
 │
 ├── 🏗️ Infrastructure (Terraform)
-│   ├── main.tf              # All Azure resources
-│   ├── variables.tf         # Configurable values
-│   ├── outputs.tf           # Post-deploy outputs
-│   └── terraform.tfvars     # Environment values
+│   ├── main.tf                   # All Azure resources
+│   ├── variables.tf              # Configurable values
+│   ├── outputs.tf                # Post-deploy outputs
+│   └── terraform.tfvars          # Environment values
 │
 ├── 🤖 ML Pipeline
-│   ├── train_model.py       # Fraud detection training
-│   ├── upload_data.py       # Data upload to Azure
-│   └── fraud_data.csv       # Training dataset
+│   ├── train_model.py            # Fraud detection training
+│   ├── upload_data.py            # Data upload to Azure
+│   └── fraud_data.csv            # Base training dataset
 │
 ├── 🔄 Data Pipeline
-│   └── data_pipeline.py     # Automated daily data collection
+│   └── data_pipeline.py          # Automated daily data collection
 │
 ├── 🧠 RAG System
 │   ├── rag_document_searcher.py  # AI compliance assistant
-│   └── bank_docs/               # Policy documents
+│   └── bank_docs/                # Policy documents
 │       ├── aml_policy.txt
 │       ├── fraud_policy.txt
 │       └── data_privacy.txt
 │
+├── 🌐 Web Interface
+│   ├── app.py                    # Streamlit web app
+│   ├── requirements.txt          # Python dependencies
+│   └── screenshots/              # ← PUT YOUR SCREENSHOTS HERE
+│       ├── compliance_assistant.png
+│       ├── fraud_checker.png
+│       ├── pipeline_dashboard.png
+│       └── platform_overview.png
+│
 ├── 🔐 Security
-│   └── get_secret.py        # Key Vault integration
+│   └── get_secret.py             # Key Vault integration
 │
 └── 🚀 CI/CD
     └── .github/workflows/
-        └── ml_pipeline.yml  # GitHub Actions workflow
+        └── ml_pipeline.yml       # GitHub Actions workflow
 ```
 
 ---
 
-## 🚀 What Runs Automatically Every Night
+## 🚀 Automated Pipeline — Every Night At Midnight
 
 ```
-12:00 AM  ──▶  GitHub Actions triggers
+12:00 AM  ──▶  GitHub Actions triggers automatically
 12:01 AM  ──▶  Login to Azure securely
 12:02 AM  ──▶  Security orphan check
-12:03 AM  ──▶  Generate 1,000 transactions
-12:04 AM  ──▶  Validate data quality
-12:05 AM  ──▶  Upload to Azure Storage
+12:03 AM  ──▶  Generate 1,000 fresh transactions
+12:04 AM  ──▶  Validate data quality (5 checks)
+12:05 AM  ──▶  Upload to Azure Blob Storage
 12:06 AM  ──▶  Train fraud detection model
 12:10 AM  ──▶  Register new model version
-12:11 AM  ──▶  Verify registration
+12:11 AM  ──▶  Validate model accuracy
 12:12 AM  ──▶  Pipeline complete ✅
 ```
 
@@ -177,9 +267,9 @@ bank-ai-project/
 | False Positive Rate | <2% |
 | Data Quality Pass Rate | 100% |
 | Cost Per Pipeline Run | ~$0.05 |
-| Model Versions Registered | 3+ |
-| Pipeline Success Rate | 100% (last 7 runs) |
-| Security Vulnerabilities Fixed | 4 |
+| Model Versions Registered | 4+ |
+| Pipeline Success Rate | 100% (7 runs) |
+| Security Vulnerabilities Found & Fixed | 4 |
 
 ---
 
@@ -188,7 +278,7 @@ bank-ai-project/
 - ✅ **Zero hardcoded secrets** — all in GitHub Secrets + Azure Key Vault
 - ✅ **Principle of Least Privilege** — each identity has minimum required permissions
 - ✅ **Network Security Groups** — all traffic filtered, Deny-All-Inbound rule
-- ✅ **Azure Policy** — HTTPS enforced on all storage, tags required on all resources
+- ✅ **Azure Policy** — HTTPS enforced, tags required on all resources
 - ✅ **Orphaned permission detection** — runs on every pipeline execution
 - ✅ **Audit trail** — every action logged with timestamp and pipeline run ID
 - ✅ **OSFI compliance ready** — meets banking regulations
@@ -203,11 +293,11 @@ bank-ai-project/
 | Algorithm | Random Forest (100 trees) |
 | Training Data | 1,000+ daily transactions |
 | Features | Amount, Hour, Distance from home |
+| Feature Importance | Amount 36.4%, Hour 35.4%, Distance 28.3% |
 | Accuracy | 95%+ |
-| False Positive Rate | <2% |
 | Retraining | Every night automatically |
 | Registry | Azure ML Model Registry |
-| Versioning | Full version history + rollback |
+| Versioning | Full history + rollback capability |
 
 ---
 
@@ -227,10 +317,13 @@ Answers questions about bank policies instantly:
     72 hours. Affected customers notified within 24 hours.
     Full incident report required within 30 days."
     Source: data_privacy.txt ✅
+
+❓ "Who is the president of USA?"
+🤖 "This is not covered in current policies."
+    → No hallucination — only answers from approved docs ✅
 ```
 
 **Powered by:** LangChain + FAISS + Llama 3.3
-**Key feature:** Returns "Not in current policies" for out-of-scope questions — no hallucination!
 
 ---
 
@@ -246,39 +339,37 @@ Real production errors encountered and resolved:
 
 **2. Orphaned Role Assignment (Ghost Account)**
 - **What broke:** Security audit found Contributor access assigned to a deleted service principal
-- **Diagnosis:** Azure AD and RBAC are separate systems — deleting a service principal does NOT automatically remove its role assignments
-- **Fix:** Retrieved role assignment ID directly and deleted by ID (not by assignee name)
-- **Learned:** Orphan detection must run automatically on every pipeline — added to GitHub Actions
+- **Diagnosis:** Azure AD and RBAC are separate systems — deleting a service principal does NOT remove its role assignments
+- **Fix:** Retrieved role assignment ID directly and deleted by ID not by assignee name
+- **Learned:** Orphan detection must run automatically on every pipeline execution
 
 **3. Expired Azure CLI Token**
 - **What broke:** data_pipeline.py failed with AADSTS70043 after 7 days
 - **Diagnosis:** Azure refresh tokens expire after 7 days due to conditional access policies
-- **Fix:** Re-authenticated with az login + added environment variable validation
-- **Learned:** Production pipelines must use service principals not CLI credentials
+- **Fix:** Re-authenticated + added Fail Fast environment variable validation
+- **Learned:** Production pipelines must use service principals — not CLI credentials
 
 **4. Deprecated AI Model**
 - **What broke:** Groq API returned 400 Bad Request — model decommissioned
 - **Diagnosis:** llama3-8b-8192 was retired by Groq without notice
-- **Fix:** Updated model to llama-3.3-70b-versatile in configuration
-- **Learned:** Never hardcode model names — use environment variables for easy updates
+- **Fix:** Updated to llama-3.3-70b-versatile in configuration
+- **Learned:** Never hardcode model names — use environment variables
 
 **5. Missing Environment Variable (None URL)**
 - **What broke:** Storage URL showed as "https://None.blob.core.windows.net"
-- **Diagnosis:** STORAGE_ACCOUNT_NAME environment variable not set in terminal session
-- **Fix:** Added Fail Fast validation check at pipeline startup before any processing
-- **Learned:** Validate ALL configuration at start — fail immediately with clear message
+- **Diagnosis:** STORAGE_ACCOUNT_NAME not set in terminal session
+- **Fix:** Added Fail Fast validation at pipeline startup
+- **Learned:** Validate ALL config at start — fail immediately with clear message
 
 **6. LangChain Package Version Conflict**
 - **What broke:** ModuleNotFoundError on langchain_core.pydantic_v1
-- **Diagnosis:** LangChain reorganized packages across versions — imports moved between modules
-- **Fix:** Pinned specific compatible versions in requirements, updated import paths
-- **Learned:** Always pin exact package versions in production — never use "latest"
+- **Diagnosis:** LangChain reorganized packages — imports moved between modules
+- **Fix:** Pinned specific compatible versions, updated import paths
+- **Learned:** Always pin exact package versions — never use latest
 
 ---
 
 ## 🏦 Bank Relevance
-
-This project directly addresses Bank's needs:
 
 | Bank Need | This Project |
 |-------------|-------------|
@@ -290,51 +381,9 @@ This project directly addresses Bank's needs:
 | Infrastructure as Code | ✅ Full Terraform |
 | Model governance | ✅ Registry + versioning + rollback |
 | Zero-trust security | ✅ Principle of least privilege |
+| Non-technical access | ✅ Streamlit web interface |
 
 ---
 
-## 📊 Azure Resources Deployed
-
-```bash
-# All resources managed by Terraform
-Resource Group:      bank-ai-dev-rg       (canadacentral)
-Storage Account:     bankaidevst
-Key Vault:           bank-ai-dev-kv
-ML Workspace:        bank-ai-ml-workspace
-App Insights:        bank-ai-dev-insights
-Data Factory:        bank-ai-dev-adf
-Network Security:    bank-ai-dev-nsg
-Azure Policies:      require-https-storage
-                     require-resource-tags
-```
-
----
-
-## 🚦 Getting Started
-
-```bash
-# 1. Clone repository
-git clone https://github.com/sneerudu29/bank-ai-pipeline
-
-# 2. Deploy infrastructure
-cd bank-ai-project
-terraform init
-terraform apply
-
-# 3. Set environment variables
-$env:STORAGE_ACCOUNT_NAME="bankaidevst"
-
-# 4. Run data pipeline
-py data_pipeline.py
-
-# 5. Train model
-py train_model.py
-
-# 6. Ask compliance questions
-py rag_document_searcher.py
-```
-
-
----
-
-*Built with ❤️
+*Built with ❤️*
+*Every component is production-ready and bank-grade secure*
