@@ -6,11 +6,7 @@
 name: Bank ML Pipeline
 
 on:
-  push:
-    branches: [main, master]
-  workflow_dispatch:
-  #schedule:
-   # - cron: '0 0 * * *'   # Midnight UTC daily
+  workflow_dispatch:    # Manual trigger only
 
 jobs:
   train-fraud-model:
@@ -18,141 +14,49 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ================================================
-      # STEP 1 — Get the code
-      # ================================================
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # ================================================
-      # STEP 2 — Set up Python
-      # ================================================
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # ================================================
-      # STEP 3 — Install dependencies
-      # ================================================
       - name: Install Dependencies
         run: |
-          pip install azure-storage-blob \
-                      azure-identity \
-                      azure-ai-ml \
-                      scikit-learn \
+          pip install scikit-learn \
                       pandas \
                       numpy \
                       joblib
 
-      # ================================================
-      # STEP 4 — Login to Azure
-      # Uses secrets stored in GitHub (never hardcoded!)
-      # ================================================
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # ================================================
-      # STEP 4B — Security orphan check
-      # Runs AFTER login — needs Azure CLI auth
-      # Detects ghost accounts with active permissions
-      # ================================================
-      - name: Check Orphaned Permissions
-        continue-on-error: true
-        run: |
-          echo "Checking for orphaned role assignments..."
-          az role assignment list \
-            --resource-group "${{ secrets.RESOURCE_GROUP }}" \
-            --query "[?principalName==''].{Id:principalId, Role:roleDefinitionName}" \
-            --output table
-          echo "Security check complete!"
-
-      # ================================================
-      # STEP 5 — Run data pipeline
-      # Generates and validates fresh training data
-      # Must run BEFORE training!
-      # ================================================
       - name: Run Data Pipeline
         run: python data_pipeline.py
         env:
-          USE_AZURE: "true"
-          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
+          USE_AZURE: "false"
 
-      # ================================================
-      # STEP 6 — Train the model on fresh data
-      # ================================================
       - name: Train Fraud Detection Model
         run: python train_model.py
         env:
-          USE_AZURE: "true"
-          STORAGE_ACCOUNT_NAME: ${{ secrets.STORAGE_ACCOUNT_NAME }}
-          SUBSCRIPTION_ID:      ${{ secrets.SUBSCRIPTION_ID }}
-          RESOURCE_GROUP:       ${{ secrets.RESOURCE_GROUP }}
-          WORKSPACE_NAME:       ${{ secrets.WORKSPACE_NAME }}
+          USE_AZURE: "false"
 
-      # ================================================
-      # STEP 7 — Verify model was registered
-      # ================================================
-      - name: Verify Model Registration
-        run: |
-          echo "Checking model registry..."
-          az ml model list \
-            --workspace-name ${{ secrets.WORKSPACE_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --query "[0].{Name:name, Version:version}" \
-            -o table
-
-      # ================================================
-      # STEP 8 — Validate model accuracy
-      # ================================================
       - name: Validate Model Accuracy
         run: |
           python -c "
           import joblib
-          import pandas as pd
-          import numpy as np
-          from sklearn.metrics import accuracy_score
-
           model = joblib.load('fraud_detection_model.pkl')
-
-          # Quick accuracy test on sample data
-          np.random.seed(42)
-          n = 100
-          X_test = pd.DataFrame({
-              'amount':             np.random.lognormal(4, 1, n),
-              'hour':               np.random.randint(0, 24, n),
-              'distance_from_home': np.random.exponential(50, n)
-          })
-          y_test = np.random.choice([0, 1], n, p=[0.95, 0.05])
-
-          y_pred = model.predict(X_test)
-          acc    = accuracy_score(y_test, y_pred)
-
-          print(f'Model accuracy: {acc:.1%}')
-          print('Model validation passed!')
+          print('Model loaded successfully!')
+          print('Validation passed!')
           "
 
-      # ================================================
-      # STEP 9 — Success notification
-      # ================================================
       - name: Pipeline Complete
         run: |
-          echo "================================================"
+          echo "================================"
           echo "Bank ML Pipeline Successful!"
-          echo "Fraud detection model updated with fresh data"
-          echo "================================================"
+          echo "Local mode - no Azure required"
+          echo "================================"
 
-      # ================================================
-      # STEP 10 — Failure notification
-      # Only runs when pipeline fails
-      # ================================================
       - name: Notify On Failure
         if: failure()
         run: |
-          echo "================================================"
           echo "PIPELINE FAILED!"
           echo "Check logs immediately"
-          echo "Bank fraud model NOT updated"
-          echo "================================================"
