@@ -2,6 +2,21 @@
 
 ---
 
+## 🌐 Live Demo — Web Interface
+
+> No coding required — point and click!
+
+### Compliance Assistant
+![Compliance Assistant](screenshots/compliance_assistant.png)
+
+### Fraud Risk Checker
+![Fraud Checker](screenshots/fraud_checker.png)
+
+### Pipeline Dashboard
+![Pipeline Dashboard](screenshots/pipeline_dashboard.png)
+
+---
+
 ## 🎯 What This Project Does
 
 A complete, production-grade MLOps platform that:
@@ -16,48 +31,13 @@ A complete, production-grade MLOps platform that:
 
 ---
 
-## 🌐 Web Interface — Live Demo
+## 🖥️ Quick Start — Run Locally In 2 Minutes
 
-> Non-technical users can interact with the full platform
-> via a Streamlit web interface.
-> No coding required.
-
-### Compliance Assistant
-![Compliance Assistant](screenshots/compliance_assistant.png)
-
-*Ask any policy question in plain English — get instant answers with source citations*
-
----
-
-### Fraud Checker
-![Fraud Checker](screenshots/fraud_checker.png)
-
-*Adjust transaction details with sliders — get real-time fraud risk assessment*
-
----
-
-### Pipeline Dashboard
-![Pipeline Dashboard](screenshots/pipeline_dashboard.png)
-
-*View automated pipeline run history, metrics, and 7-day fraud trends*
-
----
-
-### Run Locally In 2 Minutes
-
-```bash
-pip install streamlit pandas numpy
-streamlit run app.py
-# Opens at http://localhost:8501
-```
-
----
-
-## 🖥️ Quick Start — No Azure Needed
+No cloud account needed to explore!
 
 ```bash
 # Install dependencies
-pip install scikit-learn pandas numpy joblib streamlit langchain
+pip install scikit-learn pandas numpy joblib streamlit
 
 # Generate fresh transaction data
 py data_pipeline.py
@@ -67,14 +47,15 @@ py train_model.py
 
 # Launch web interface
 streamlit run app.py
+# Opens at http://localhost:8501
 ```
 
 ---
 
 ## ☁️ Cloud Deployment (Azure)
 
-Full production deployment on Azure via Terraform.
-Infrastructure redeploys in under 10 minutes.
+Built and validated on Azure — full infrastructure redeploys
+in under 10 minutes via Terraform.
 
 ```bash
 # Enable Azure mode
@@ -90,8 +71,10 @@ py data_pipeline.py
 py train_model.py
 ```
 
-> Built and validated on Azure canadacentral region.
-> Fully automated — runs every night at midnight via GitHub Actions.
+> Validated on Azure canadacentral region.
+> Meets OSFI compliance requirements.
+> Designed to run automatically every night at midnight
+> via GitHub Actions when Azure is active.
 
 ---
 
@@ -142,33 +125,28 @@ Professional Answer
 ```
                     ┌─────────────────────────────┐
                     │      GitHub Actions           │
-                    │   (Runs every midnight)       │
+                    │   (Triggered manually or      │
+                    │    on every code push)        │
                     └──────────┬──────────────────┘
                                │
               ┌────────────────┼────────────────┐
               ▼                ▼                ▼
     ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
-    │  Data       │  │  Azure ML   │  │  Security   │
+    │  Data       │  │  ML Model   │  │  Security   │
     │  Pipeline   │  │  Training   │  │  Scanning   │
     │             │  │             │  │             │
     │ • Generate  │  │ • Train     │  │ • RBAC      │
     │ • Validate  │  │ • Evaluate  │  │ • Orphan    │
-    │ • Upload    │  │ • Register  │  │   Check     │
+    │ • Save      │  │ • Register  │  │   Check     │
     └──────┬──────┘  └──────┬──────┘  └─────────────┘
            │                │
            ▼                ▼
     ┌─────────────────────────────┐
-    │      Azure Blob Storage      │
+    │    Local Storage / Azure     │
     │   fraud-detection-data/      │
     │   • daily_data/              │
     │   • models/                  │
     │   • pipeline_reports/        │
-    └─────────────────────────────┘
-           │
-           ▼
-    ┌─────────────────────────────┐
-    │      Azure Key Vault         │
-    │   Secure secret storage      │
     └─────────────────────────────┘
 ```
 
@@ -179,7 +157,7 @@ Professional Answer
 | Category | Technology | Purpose |
 |----------|-----------|---------|
 | Infrastructure | Terraform | Infrastructure as Code |
-| Cloud | Microsoft Azure | Cloud platform |
+| Cloud | Microsoft Azure | Cloud platform (validated) |
 | ML Platform | Azure ML Studio | Model training + registry |
 | CI/CD | GitHub Actions | Automated pipeline |
 | AI/GenAI | LangChain + Groq | RAG compliance assistant |
@@ -207,8 +185,7 @@ bank-ai-project/
 │
 ├── 🤖 ML Pipeline
 │   ├── train_model.py            # Fraud detection training
-│   ├── upload_data.py            # Data upload to Azure
-│   └── fraud_data.csv            # Base training dataset
+│   └── upload_data.py            # Data upload to Azure
 │
 ├── 🔄 Data Pipeline
 │   └── data_pipeline.py          # Automated daily data collection
@@ -222,12 +199,10 @@ bank-ai-project/
 │
 ├── 🌐 Web Interface
 │   ├── app.py                    # Streamlit web app
-│   ├── requirements.txt          # Python dependencies
-│   └── screenshots/              # ← PUT YOUR SCREENSHOTS HERE
+│   └── screenshots/              # App screenshots for README
 │       ├── compliance_assistant.png
 │       ├── fraud_checker.png
-│       ├── pipeline_dashboard.png
-│       └── platform_overview.png
+│       └── pipeline_dashboard.png
 │
 ├── 🔐 Security
 │   └── get_secret.py             # Key Vault integration
@@ -239,7 +214,9 @@ bank-ai-project/
 
 ---
 
-## 🚀 Automated Pipeline — Every Night At Midnight
+## 🚀 Automated Pipeline
+
+When Azure is active, the pipeline runs every night at midnight:
 
 ```
 12:00 AM  ──▶  GitHub Actions triggers automatically
@@ -254,6 +231,9 @@ bank-ai-project/
 12:12 AM  ──▶  Pipeline complete ✅
 ```
 
+Currently running in local mode — triggers manually via GitHub Actions.
+Full Azure deployment redeploys in under 10 minutes via `terraform apply`.
+
 ---
 
 ## 📊 Performance Metrics
@@ -262,14 +242,14 @@ bank-ai-project/
 |--------|-------|
 | Model Training Time | ~2 minutes |
 | Pipeline Total Duration | ~12 minutes |
-| Transactions Processed Daily | 1,000 |
+| Transactions Processed Per Run | 1,000 |
 | Model Accuracy | 95%+ |
 | False Positive Rate | <2% |
 | Data Quality Pass Rate | 100% |
-| Cost Per Pipeline Run | ~$0.05 |
 | Model Versions Registered | 4+ |
 | Pipeline Success Rate | 100% (7 runs) |
 | Security Vulnerabilities Found & Fixed | 4 |
+| Pipeline Mode | Local + Azure cloud ready |
 
 ---
 
@@ -281,7 +261,7 @@ bank-ai-project/
 - ✅ **Azure Policy** — HTTPS enforced, tags required on all resources
 - ✅ **Orphaned permission detection** — runs on every pipeline execution
 - ✅ **Audit trail** — every action logged with timestamp and pipeline run ID
-- ✅ **OSFI compliance ready** — meets banking regulations
+- ✅ **OSFI compliance ready** — meets Canadian banking regulations
 - ✅ **No personal accounts in production** — service principals only
 
 ---
@@ -291,11 +271,11 @@ bank-ai-project/
 | Metric | Value |
 |--------|-------|
 | Algorithm | Random Forest (100 trees) |
-| Training Data | 1,000+ daily transactions |
+| Training Data | 1,000+ transactions per run |
 | Features | Amount, Hour, Distance from home |
 | Feature Importance | Amount 36.4%, Hour 35.4%, Distance 28.3% |
 | Accuracy | 95%+ |
-| Retraining | Every night automatically |
+| Retraining | Automated via pipeline |
 | Registry | Azure ML Model Registry |
 | Versioning | Full history + rollback capability |
 
@@ -333,51 +313,45 @@ Real production errors encountered and resolved:
 
 **1. RoleAssignmentExists (409 Conflict)**
 - **What broke:** Terraform tried creating role assignments that already existed from manual CLI commands
-- **Diagnosis:** Conflicting state between Azure portal and Terraform state file
 - **Fix:** Used `terraform import` to sync existing resources into Terraform state
 - **Learned:** Always Terraform first — never make manual changes outside Terraform
 
 **2. Orphaned Role Assignment (Ghost Account)**
 - **What broke:** Security audit found Contributor access assigned to a deleted service principal
-- **Diagnosis:** Azure AD and RBAC are separate systems — deleting a service principal does NOT remove its role assignments
 - **Fix:** Retrieved role assignment ID directly and deleted by ID not by assignee name
 - **Learned:** Orphan detection must run automatically on every pipeline execution
 
 **3. Expired Azure CLI Token**
 - **What broke:** data_pipeline.py failed with AADSTS70043 after 7 days
-- **Diagnosis:** Azure refresh tokens expire after 7 days due to conditional access policies
 - **Fix:** Re-authenticated + added Fail Fast environment variable validation
 - **Learned:** Production pipelines must use service principals — not CLI credentials
 
 **4. Deprecated AI Model**
-- **What broke:** Groq API returned 400 Bad Request — model decommissioned
-- **Diagnosis:** llama3-8b-8192 was retired by Groq without notice
+- **What broke:** Groq API returned 400 — model decommissioned overnight
 - **Fix:** Updated to llama-3.3-70b-versatile in configuration
 - **Learned:** Never hardcode model names — use environment variables
 
-**5. Missing Environment Variable (None URL)**
+**5. Missing Environment Variable**
 - **What broke:** Storage URL showed as "https://None.blob.core.windows.net"
-- **Diagnosis:** STORAGE_ACCOUNT_NAME not set in terminal session
 - **Fix:** Added Fail Fast validation at pipeline startup
 - **Learned:** Validate ALL config at start — fail immediately with clear message
 
 **6. LangChain Package Version Conflict**
 - **What broke:** ModuleNotFoundError on langchain_core.pydantic_v1
-- **Diagnosis:** LangChain reorganized packages — imports moved between modules
 - **Fix:** Pinned specific compatible versions, updated import paths
 - **Learned:** Always pin exact package versions — never use latest
 
 ---
 
-## 🏦 Bank Relevance
+## 🏦 Banking Industry Relevance
 
-| Bank Need | This Project |
-|-------------|-------------|
+| Business Need | This Project |
+|--------------|-------------|
 | Anti-Money Laundering AI | ✅ Fraud detection model |
-| Automated ML pipelines | ✅ GitHub Actions + Data Factory |
+| Automated ML pipelines | ✅ GitHub Actions pipeline |
 | Compliance document search | ✅ RAG assistant |
 | Bank-grade security | ✅ RBAC + NSG + Key Vault |
-| OSFI compliance | ✅ Audit trails + policies |
+| Regulatory compliance | ✅ Audit trails + OSFI ready |
 | Infrastructure as Code | ✅ Full Terraform |
 | Model governance | ✅ Registry + versioning + rollback |
 | Zero-trust security | ✅ Principle of least privilege |
@@ -385,5 +359,4 @@ Real production errors encountered and resolved:
 
 ---
 
-*Built with ❤️*
-*Every component is production-ready and bank-grade secure*
+*Built with ❤️ in 7 days — production-ready, bank-grade secure*
